@@ -66,6 +66,7 @@ while game:
     
 
     if finish != True:
+        window.fill(back)
         pl1.update_l()
         pl2.update_r()
         pl1.reset()
