@@ -2,7 +2,7 @@ from pygame import *
 from pygame import time
 from random import randint
 from time import time as timer
-
+font.init()
 
 class Gamesprite(sprite.Sprite):
     def __init__(self, player_image, player_x, player_y , player_speed,width = 50,heght=50):
@@ -20,24 +20,23 @@ class Gamesprite(sprite.Sprite):
 
 
 
-
 class Player(Gamesprite):
     def update_r(self):
         keys = key.get_pressed()
         if keys[K_UP] and self.rect.y >5:
             self.rect.y -= self.speed
-            self.player_image= "yes1.png"
+            self.image = transform.scale(image.load("yes1.png"),(25,100))
         if keys[K_DOWN] and self.rect.y < 550:
             self.rect.y += self.speed
-            self.player_image= "yes11.png"
+            self.image = transform.scale(image.load("yes11.png"),(25,100))
     def update_l(self):
         keys = key.get_pressed()
         if keys[K_w] and self.rect.y >5:
             self.rect.y -= self.speed
-            self.player_image= "yes2.png"
+            self.image = transform.scale(image.load("yes2.png"),(25,100))
         if keys[K_s] and self.rect.y < 550:
             self.rect.y += self.speed
-            self.player_image= "yes22.png"
+            self.image = transform.scale(image.load("yes22.png"),(25,100))
     
 back = (200,100,250)
 
@@ -45,31 +44,71 @@ back = (200,100,250)
 
 
 
-
-
+font = font.SysFont("Arial",40)
+pl1w = font.render("1 игрок победил!",True,(randint(0,245),randint(0,245),randint(0,245)))
+pl2w = font.render("2 игрок победил!",True,(randint(0,245),randint(0,245),randint(0,245)))
 window = display.set_mode((600,600))
 window.fill(back)
 
 game = True
 finish = False
 clock = time.Clock()
-FPS = 240
-
-pl1 = Player("yes1.png",30,200,4,50,100)
-pl2 = Player("yes2.png",520,200,4,50,100)
+FPS = 60
+pl1 = Player("yes1.png",30,200,4,25,100)
+pl2 = Player("yes2.png",520,200,4,25,100)
+ball = Gamesprite("мячик.png",240,200,4,100,75)
+x = 3
+y = 3
+cccc = 0
+ccc = 0
+cc = randint(1,2)
+c = 0
+if cc == 2:
+    x *=-1
+else :
+    x *=1
 
 while game:
     for e in event.get():
         if e.type == QUIT:
             game = False
+
+
+
     
     
 
     if finish != True:
         window.fill(back)
+        ball.reset()
         pl1.update_l()
         pl2.update_r()
         pl1.reset()
         pl2.reset()
+        ball.rect.x += x
+        ball.rect.y += y
+
+        
+        if ball.rect.y >510 or ball.rect.y <-10:
+            y *=-1
+        
+        if sprite.collide_rect(ball,pl1) or sprite.collide_rect(ball,pl2):
+            x *= -1
+            c += 1
+        if c >= 3 and x > 0:
+            x +=3
+            c = 0
+        if ball.rect.x < 30:
+            ball.rect.x = 240
+            ball.rect.y =200
+            ccc += 1
+        if ball.rect.x > 520:
+            cccc += 1
+            ball.rect.x = 240
+            ball.rect.y =200
+        if ccc >3 :
+            window.blit(pl1w,(240,200))
+        if cccc >3 :
+            window.blit(pl2w,(240,200))
     display.update()
     clock.tick(FPS)
