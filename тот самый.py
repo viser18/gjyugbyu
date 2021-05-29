@@ -40,13 +40,15 @@ class Player(Gamesprite):
     
 back = (200,100,250)
 
-
-
-
-
+s1 = 0
+s2 = 0
+ss2 = 0
+ss1 = 0
 font = font.SysFont("Arial",40)
 pl1w = font.render("1 игрок победил!",True,(randint(0,245),randint(0,245),randint(0,245)))
 pl2w = font.render("2 игрок победил!",True,(randint(0,245),randint(0,245),randint(0,245)))
+
+
 window = display.set_mode((600,600))
 window.fill(back)
 
@@ -67,7 +69,11 @@ if cc == 2:
     x *=-1
 else :
     x *=1
+last_time = timer()
 
+
+score1 = font.render(str(s1),True,(2,4,5))
+score2 = font.render(str(s2),True,(6,7,8))
 while game:
     for e in event.get():
         if e.type == QUIT:
@@ -88,6 +94,15 @@ while game:
         ball.rect.x += x
         ball.rect.y += y
 
+
+        now_time = timer()
+        if now_time - last_time > 3:
+            score1 = font.render(str(s1),True,(randint(0,255),randint(0,255),randint(0,255)))
+            score2 = font.render(str(s2),True,(randint(0,255),randint(0,255),randint(0,255)))
+            last_time = timer()
+
+        window.blit(score1,(10,10))
+        window.blit(score2,(570,10))
         
         if ball.rect.y >510 or ball.rect.y <-10:
             y *=-1
@@ -96,16 +111,20 @@ while game:
             x *= -1
             c += 1
         if c >= 3 and x > 0:
-            x +=3
+            x +=1
             c = 0
         if ball.rect.x < 30:
             ball.rect.x = 240
             ball.rect.y =200
             ccc += 1
+            s2 += 1
+            x = 3
         if ball.rect.x > 520:
-            cccc += 1
+            cccc += 1 
+            s1 += 1
             ball.rect.x = 240
             ball.rect.y =200
+            x = 3
         if ccc >3 :
             window.blit(pl1w,(240,200))
         if cccc >3 :
